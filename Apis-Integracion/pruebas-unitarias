@@ -1,0 +1,145 @@
+
+
+
+............\÷\÷\÷\÷ PRUEBAS AUTOMATIZADAS PARA TERMINAL DE POSTAM ÷/÷/÷/÷/÷/..............
+
+
+
+-------- API CLIENTE -----------
+
+GET /api/clientes/
+
+
+URL: /api/clientes/
+
+
+pm.test("Respuesta exitosa", function () {
+    pm.response.to.have.status(200);
+    pm.response.to.be.json;
+    pm.expect(pm.response.json()).to.have.length.above(0);
+});
+
+
+POST /api/clientes/
+
+
+
+URL: /api/clientes/
+
+BODY: {
+    "id": 1,
+    "razonSocial": "Empresa X",
+    "rut": "12.345.678-9",
+    "direccion": "Calle Principal 123"
+}
+
+
+
+
+pm.test("Cliente agregado correctamente", function () {
+    pm.response.to.have.status(200);
+    pm.response.to.be.json;
+    pm.expect(pm.response.json()).to.have.property("id");
+});
+
+
+PUT /api/clientes/{id}
+
+URL: /api/clientes/{{client_id}}
+
+BODY: {
+    "id": 1,
+    "razonSocial": "Empresa X Modificada",
+    "rut": "12.345.678-9",
+    "direccion": "Calle Principal 456"
+}
+
+
+
+pm.test("Cliente actualizado correctamente", function () {
+    pm.response.to.have.status(200);
+    pm.response.to.be.json;
+    pm.expect(pm.response.json()).to.have.property("id", pm.environment.get("client_id"));
+});
+
+
+DELETE: 
+DELETE /api/clientes/{id}
+
+pm.test("Cliente eliminado correctamente", function () {
+    pm.response.to.have.status(200);
+    pm.response.to.be.json;
+    pm.expect(pm.response.json()).to.have.property("message", "Cliente eliminado correctamente");
+});
+
+
+
+
+------- API LOGISTICA -----
+
+POST /estado_envio/
+
+URL: /estado_envio/
+
+BODY: {
+    "order_id": 123,
+    "status": "En proceso"
+}
+
+
+
+pm.test("Estado de envío actualizado correctamente", function () {
+    pm.response.to.have.status(200);
+    pm.response.to.be.json;
+    pm.expect(pm.response.json()).to.have.property("message", "Estado actualizado correctamente");
+});
+
+
+
+GET /estado_envio/{order_id}
+
+URL: /get_status/{{order_id}}
+
+pm.test("Estado de envío obtenido correctamente", function () {
+    pm.response.to.have.status(200);
+    pm.response.to.be.json;
+    pm.expect(pm.response.json()).to.have.property("order_id", pm.environment.get("order_id"));
+});
+
+
+----------- API DE VENTAS ------
+
+
+POST /generar_boleta/
+
+URL: /generar_boleta/
+
+BODY: {
+    "customer_id": 1,
+    "order_id": 123,
+    "items": [
+        {
+            "nombre": "Producto A",
+            "precio": 10.5,
+            "cantidad": 2
+        }
+    ]
+}
+
+
+pm.test("Boleta generada correctamente", function () {
+    pm.response.to.have.status(200);
+    pm.response.to.be.json;
+    pm.expect(pm.response.json()).to.have.property("customer_id", pm.environment.get("customer_id"));
+});
+
+
+
+
+---------- TIEMPO DE RESPUESTA ------------
+
+
+pm.test("Respuesta en tiempo aceptable", function () {
+    pm.expect(pm.response.responseTime).to.be.below(200); 
+});
+

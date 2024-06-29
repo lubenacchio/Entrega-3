@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Logística</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 0.5rem;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API de Logística</h1>
+        
+        <h2>Actualizar Estado de Envío</h2>
+        <form id="updateStatusForm">
+            <div class="form-group">
+                <label for="orderId">ID del Pedido:</label>
+                <input type="number" id="orderId" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Estado:</label>
+                <input type="text" id="status" required>
+            </div>
+            <button type="submit">Actualizar Estado</button>
+        </form>
+        
+        <h2>Consultar Estado de Envío</h2>
+        <form id="getStatusForm">
+            <div class="form-group">
+                <label for="getOrderId">ID del Pedido:</label>
+                <input type="number" id="getOrderId" required>
+            </div>
+            <button type="submit">Consultar Estado</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('updateStatusForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const orderId = document.getElementById('orderId').value;
+            const status = document.getElementById('status').value;
+
+            fetch('http://localhost:8001/estado_envio/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ order_id: orderId, status: status })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = JSON.stringify(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        document.getElementById('getStatusForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const orderId = document.getElementById('getOrderId').value;
+
+            fetch(`http://localhost:8001/get_status/${orderId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = JSON.stringify(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
